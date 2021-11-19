@@ -10,6 +10,7 @@ public class BasicObjectPhysics : MonoBehaviour
 
     public PhysicsManager physicManager;
     public float gravityScale = 1.0f;
+    public PhysiczColliderBase shape = null;
 
 
     // Start is called before the first frame update
@@ -23,16 +24,6 @@ public class BasicObjectPhysics : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position = transform.position + velocity * Time.deltaTime;
-
-        // Reverse Gravity - Delete Later
-        if (transform.position.y <= 0.5)
-        {
-            velocity.y = (physicManager.gravity.y * -1);
-        }
-        if (transform.position.y >= 2)
-        {
-            velocity.y = physicManager.gravity.y;
-        }
+       
     }
 }
