@@ -12,6 +12,9 @@ public class BasicObjectPhysics : MonoBehaviour
     public float gravityScale = 1.0f;
     public PhysiczColliderBase shape = null;
 
+    // should this object be able to be controlled by collision response physics?
+    public bool lockPosition = false;
+
 
     // Start is called before the first frame update
     void Start()
@@ -24,6 +27,6 @@ public class BasicObjectPhysics : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position = transform.position + velocity * Time.fixedDeltaTime;
+
     }
 }
