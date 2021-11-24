@@ -352,6 +352,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c0d2b492e2456b4d9afcdc4fbb8771f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gravityScale: -9.81
   gravity: {x: 0, y: -0.981, z: 0}
   BasicObjectsList: []
 --- !u!4 &154805827
@@ -384,6 +385,8 @@ MonoBehaviour:
   gravityCheckbox: {fileID: 790251482}
   gravityScaleSlider: {fileID: 1904494130}
   gravityScaleValueText: {fileID: 1307846664}
+  currentScaleText: {fileID: 808984477}
+  physicManager: {fileID: 154805826}
 --- !u!1 &176724121
 GameObject:
   m_ObjectHideFlags: 0
@@ -1988,7 +1991,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.25}
   m_AnchorMax: {x: 1, y: 0.75}
-  m_AnchoredPosition: {x: -5, y: 0}
+  m_AnchoredPosition: {x: 5, y: 0}
   m_SizeDelta: {x: -20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &1104022736
@@ -2973,11 +2976,11 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1582096449}
   m_FillRect: {fileID: 176724122}
   m_HandleRect: {fileID: 1582096448}
-  m_Direction: 0
-  m_MinValue: 0
-  m_MaxValue: 1
+  m_Direction: 1
+  m_MinValue: -9.81
+  m_MaxValue: 0
   m_WholeNumbers: 0
-  m_Value: 0
+  m_Value: -9.81
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:

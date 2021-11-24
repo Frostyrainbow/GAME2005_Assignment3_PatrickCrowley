@@ -5,14 +5,14 @@ using UnityEngine;
 public class PhysicsManager : MonoBehaviour
 {
 
-
-    public Vector3 gravity = new Vector3(0, -9.81f, 0);
+    public float gravityScale = -9.81f;
+    public Vector3 gravity = new Vector3(0, 0, 0);
     public List<BasicObjectPhysics> BasicObjectsList = new List<BasicObjectPhysics>();
 
     // Start is called before the first frame update
     void Start()
     {
-
+        gravity.y = gravityScale;
     }
 
     // Update is called once per frame

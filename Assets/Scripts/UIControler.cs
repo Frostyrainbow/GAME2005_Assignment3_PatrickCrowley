@@ -10,6 +10,8 @@ public class UIControler : MonoBehaviour
     public Toggle gravityCheckbox;
     public Slider gravityScaleSlider;
     public Text gravityScaleValueText;
+    public Text currentScaleText;
+    public PhysicsManager physicManager;
 
     // Start is called before the first frame update
     void Start()
@@ -18,6 +20,7 @@ public class UIControler : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
 
         gravityScaleValueText.text = gravityScaleSlider.value.ToString();
+        physicManager = FindObjectOfType<PhysicsManager>(); // return the first found component in the scene which has the type
     }
 
     // Update is called once per frame
@@ -47,15 +50,21 @@ public class UIControler : MonoBehaviour
         if (gravityCheckbox.isOn)
         {
             Debug.Log("Gravity is on");
+            physicManager.gravity.y = physicManager.gravityScale;
         }
         else
         {
             Debug.Log("Gravity is off");
+            physicManager.gravity.y = 0;
         }
     }
 
     public void OnGravityScaleValueChange()
     {
         gravityScaleValueText.text = gravityScaleSlider.value.ToString();
+        physicManager.gravityScale = gravityScaleSlider.value;
+        physicManager.gravity.y = physicManager.gravityScale;
+        currentScaleText.text = physicManager.gravityScale.ToString();
+
     }
 }
