@@ -112,18 +112,18 @@ public class PhysicsManager : MonoBehaviour
 
         }
 
-        // Velocities 
-
+        // Velocity Calculations
         Vector3 RelativeVelocity = a.kinematicsObject.velocity - b.kinematicsObject.velocity;
         Vector3 VelocityNormal = Vector3.Dot(RelativeVelocity, collisionNormalAtoB) * collisionNormalAtoB;
+
+        // Velocity Adjustments
         a.kinematicsObject.velocity = a.kinematicsObject.velocity - VelocityNormal;
         b.kinematicsObject.velocity = b.kinematicsObject.velocity + VelocityNormal;
 
-
-        //void GetLockedMovementScalars(BasicObjectPhysics a, BasicObjectPhysics b, out float moveScalarA, out float moveScalarB)
         float moveScalarA = 0.5f;
         float moveScalarB = 0.5f;
 
+        // Check to see if either object is Locked
         if (a.kinematicsObject.lockPosition && !b.kinematicsObject.lockPosition)
         {
             moveScalarA = 0.0f;
@@ -140,10 +140,12 @@ public class PhysicsManager : MonoBehaviour
             moveScalarB = 0.5f;
         }
 
+        // calculate Translations
         Vector3 minimumTranslationVectorAtoB = penitrationDepth * collisionNormalAtoB;
         Vector3 TranslationVectorA = minimumTranslationVectorAtoB * moveScalarA;
         Vector3 TranslationVectorB = -minimumTranslationVectorAtoB * moveScalarB;
 
+        // Update Positions based on Translations
         a.transform.position += TranslationVectorA;
         b.transform.position += TranslationVectorB;
 
@@ -162,29 +164,28 @@ public class PhysicsManager : MonoBehaviour
         // Use dot product to find the length of the projection of the sphere onto the plane
         // This gives the shortest distance from the plane to the center of the sphere
         // The sign of this dot product indicates which side of the normal this fromPlaneToSphere vector is on
-        // If the sign is negative they point in the opisite direction
-        // If the sign is positive they are at least somewhat in the same direction          // for copy pasta (PhysiczPlane)  (PhysiczSphere)
+        // If the sign is negative they point in the oposite direction
+        // If the sign is positive they are at least somewhat in the same direction
 
         float distance = Mathf.Abs(dot);
         float radius = ((PhysiczSphere)sphere.shape).radius;
         bool isOverlapping = distance <= radius;
         Vector3 penetrationDepth = ((PhysiczPlane)plane.shape).GetNormal() * (distance - radius);
-            //new Vector3(0.0f, (distance - radius), 0.0f);
-
-        // Still penetrates through at high speeds, needs more work done...
-        // Also never truly comes to rest...
 
         if (isOverlapping)
         {
-            Debug.Log(sphere.name + " collided with: " + plane.name);
+            Debug.Log(sphere.name + " collided with: " + plane.name + " " + plane.transform.rotation.eulerAngles.x
+                + " " + plane.transform.rotation.eulerAngles.y + " " + plane.transform.rotation.eulerAngles.z);
 
-            if((plane.transform.rotation.eulerAngles.x == 270.0f && plane.transform.rotation.eulerAngles.z == 0.0f)
-                || plane.transform.rotation.eulerAngles.x == 90.0f && plane.transform.rotation.eulerAngles.z == 0.0f)
+
+            // Adjust Reversal of Velocities based on rotation of plane
+            if((plane.transform.rotation.eulerAngles.x == 270.0f && plane.transform.rotation.eulerAngles.z == 0.0f)     // Left Wall
+                || plane.transform.rotation.eulerAngles.x == 90.0f && plane.transform.rotation.eulerAngles.z == 0.0f)   // Right Wall
             {
                 sphere.velocity.z *= -1.0f;
             }
-            if ((plane.transform.rotation.eulerAngles.x == 270.0f && plane.transform.rotation.eulerAngles.z == 90.0f)
-                || plane.transform.rotation.eulerAngles.x == 90.0f && plane.transform.rotation.eulerAngles.z == 270.0f)
+            if ((plane.transform.rotation.eulerAngles.x == 270.0f && plane.transform.rotation.eulerAngles.y == 90.0f)   // Back Wall
+                || plane.transform.rotation.eulerAngles.x == 90.0f && plane.transform.rotation.eulerAngles.y == 90.0f) // Top Wall
             {
                 sphere.velocity.x *= -1.0f;
             }
@@ -193,10 +194,6 @@ public class PhysicsManager : MonoBehaviour
                 sphere.velocity.y *= -1.0f;
             }
 
-            //Color colorA = sphere.GetComponent<Renderer>().material.color;
-            //Color colorB = plane.GetComponent<Renderer>().material.color;
-            //sphere.GetComponent<Renderer>().material.color = Color.Lerp(colorA, colorB, 0.05f);
-            //plane.GetComponent<Renderer>().material.color = Color.Lerp(colorA, colorB, 0.05f);
             sphere.velocity *= 0.5f;       // Energy Loss on bounce
             sphere.transform.Translate(-penetrationDepth);  // Reset position if embedded
         }
