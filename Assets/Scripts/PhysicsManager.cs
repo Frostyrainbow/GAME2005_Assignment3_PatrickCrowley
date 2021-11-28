@@ -89,10 +89,7 @@ public class PhysicsManager : MonoBehaviour
         if (isOverlapping)
         {
             Debug.Log(a.name + " collided with: " + b.name);
-            //Color colorA = a.GetComponent<Renderer>().material.color;
-            //Color colorB = b.GetComponent<Renderer>().material.color;
-            //a.GetComponent<Renderer>().material.color = Color.Lerp(colorA, colorB, 0.05f);
-            //b.GetComponent<Renderer>().material.color = Color.Lerp(colorA, colorB, 0.05f);
+            
         }
         else
         {
@@ -174,8 +171,7 @@ public class PhysicsManager : MonoBehaviour
 
         if (isOverlapping)
         {
-            Debug.Log(sphere.name + " collided with: " + plane.name + " " + plane.transform.rotation.eulerAngles.x
-                + " " + plane.transform.rotation.eulerAngles.y + " " + plane.transform.rotation.eulerAngles.z);
+            Debug.Log(sphere.name + " collided with: " + plane.name);
 
 
             // Adjust Reversal of Velocities based on rotation of plane
@@ -189,7 +185,7 @@ public class PhysicsManager : MonoBehaviour
             {
                 sphere.velocity.x *= -1.0f;
             }
-            if(plane.transform.rotation.eulerAngles.x == 0.0f && plane.transform.rotation.eulerAngles.z == 0.0f)
+            if(plane.transform.rotation.eulerAngles.x == 0.0f && plane.transform.rotation.eulerAngles.z == 0.0f)        // Ground
             {
                 sphere.velocity.y *= -1.0f;
             }
