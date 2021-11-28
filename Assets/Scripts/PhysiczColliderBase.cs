@@ -10,14 +10,6 @@ public enum CollisionShape
     AABB
 }
 
-//struct CollisionInfo
-//{
-//    public 
-//    public 
-//    public 
-//    public 
-//}
-
 [RequireComponent(typeof(BasicObjectPhysics))]
 public abstract class PhysiczColliderBase : MonoBehaviour
 {

@@ -89,10 +89,10 @@ public class PhysicsManager : MonoBehaviour
         if (isOverlapping)
         {
             Debug.Log(a.name + " collided with: " + b.name);
-            Color colorA = a.GetComponent<Renderer>().material.color;
-            Color colorB = b.GetComponent<Renderer>().material.color;
-            a.GetComponent<Renderer>().material.color = Color.Lerp(colorA, colorB, 0.05f);
-            b.GetComponent<Renderer>().material.color = Color.Lerp(colorA, colorB, 0.05f);
+            //Color colorA = a.GetComponent<Renderer>().material.color;
+            //Color colorB = b.GetComponent<Renderer>().material.color;
+            //a.GetComponent<Renderer>().material.color = Color.Lerp(colorA, colorB, 0.05f);
+            //b.GetComponent<Renderer>().material.color = Color.Lerp(colorA, colorB, 0.05f);
         }
         else
         {
@@ -111,6 +111,14 @@ public class PhysicsManager : MonoBehaviour
             collisionNormalAtoB = displacement / distance;
 
         }
+
+        // Velocities 
+
+        Vector3 RelativeVelocity = a.kinematicsObject.velocity - b.kinematicsObject.velocity;
+        Vector3 VelocityNormal = Vector3.Dot(RelativeVelocity, collisionNormalAtoB) * collisionNormalAtoB;
+        a.kinematicsObject.velocity = a.kinematicsObject.velocity - VelocityNormal;
+        b.kinematicsObject.velocity = b.kinematicsObject.velocity + VelocityNormal;
+
 
         //void GetLockedMovementScalars(BasicObjectPhysics a, BasicObjectPhysics b, out float moveScalarA, out float moveScalarB)
         float moveScalarA = 0.5f;
@@ -141,30 +149,6 @@ public class PhysicsManager : MonoBehaviour
 
     }
 
-    //// In C++ we can return more than one thing at a time using reference
-    //// In C#, we can define "out" parameters, which allows us to return and initialize variables
-    //void GetLockedMovementScalars(BasicObjectPhysics a, BasicObjectPhysics b, out float moveScalarA, out float moveScalarB)
-    //{
-    //    if (a.lockPosition && !b.lockPosition)
-    //    {
-    //        moveScalarA = 0.0f;
-    //        moveScalarB = 1.0f;
-    //        return;
-    //    }
-    //    if (!a.lockPosition && b.lockPosition)
-    //    {
-    //        moveScalarA = 1.0f;
-    //        moveScalarB = 0.0f;
-    //        return;
-    //    }
-    //    if (!a.lockPosition && !b.lockPosition)
-    //    {
-    //        moveScalarA = 0.5f;
-    //        moveScalarB = 0.5f;
-    //        return;
-    //    }
-    //}
-
     static void PlaneSphereCollision(BasicObjectPhysics plane, BasicObjectPhysics sphere)
     {
         // Construct a vector from any point on the plane to the sphere
@@ -184,7 +168,8 @@ public class PhysicsManager : MonoBehaviour
         float distance = Mathf.Abs(dot);
         float radius = ((PhysiczSphere)sphere.shape).radius;
         bool isOverlapping = distance <= radius;
-        Vector3 penetrationDepth = new Vector3(0.0f, (distance - radius), 0.0f);
+        Vector3 penetrationDepth = ((PhysiczPlane)plane.shape).GetNormal() * (distance - radius);
+            //new Vector3(0.0f, (distance - radius), 0.0f);
 
         // Still penetrates through at high speeds, needs more work done...
         // Also never truly comes to rest...
@@ -192,11 +177,27 @@ public class PhysicsManager : MonoBehaviour
         if (isOverlapping)
         {
             Debug.Log(sphere.name + " collided with: " + plane.name);
-            Color colorA = sphere.GetComponent<Renderer>().material.color;
-            Color colorB = plane.GetComponent<Renderer>().material.color;
-            sphere.GetComponent<Renderer>().material.color = Color.Lerp(colorA, colorB, 0.05f);
-            plane.GetComponent<Renderer>().material.color = Color.Lerp(colorA, colorB, 0.05f);
-            sphere.velocity *= -0.8f;       // Energy Loss on bounce
+
+            if((plane.transform.rotation.eulerAngles.x == 270.0f && plane.transform.rotation.eulerAngles.z == 0.0f)
+                || plane.transform.rotation.eulerAngles.x == 90.0f && plane.transform.rotation.eulerAngles.z == 0.0f)
+            {
+                sphere.velocity.z *= -1.0f;
+            }
+            if ((plane.transform.rotation.eulerAngles.x == 270.0f && plane.transform.rotation.eulerAngles.z == 90.0f)
+                || plane.transform.rotation.eulerAngles.x == 90.0f && plane.transform.rotation.eulerAngles.z == 270.0f)
+            {
+                sphere.velocity.x *= -1.0f;
+            }
+            if(plane.transform.rotation.eulerAngles.x == 0.0f && plane.transform.rotation.eulerAngles.z == 0.0f)
+            {
+                sphere.velocity.y *= -1.0f;
+            }
+
+            //Color colorA = sphere.GetComponent<Renderer>().material.color;
+            //Color colorB = plane.GetComponent<Renderer>().material.color;
+            //sphere.GetComponent<Renderer>().material.color = Color.Lerp(colorA, colorB, 0.05f);
+            //plane.GetComponent<Renderer>().material.color = Color.Lerp(colorA, colorB, 0.05f);
+            sphere.velocity *= 0.5f;       // Energy Loss on bounce
             sphere.transform.Translate(-penetrationDepth);  // Reset position if embedded
         }
     }
