@@ -10,6 +10,10 @@ public class BasicObjectPhysics : MonoBehaviour
 
     public PhysicsManager physicManager;
     public float gravityScale = 1.0f;
+    [Range(0, 1)]
+    public float bounciness = 0.6f;
+    [Range(0, 1)]
+    public float frictioniness = 0.5f;
     public PhysiczColliderBase shape = null;
 
     // should this object be able to be controlled by collision response physics?
