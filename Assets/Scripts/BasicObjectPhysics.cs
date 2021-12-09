@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class BasicObjectPhysics : MonoBehaviour
@@ -16,6 +17,7 @@ public class BasicObjectPhysics : MonoBehaviour
     public float frictioniness = 0.5f;
     public PhysiczColliderBase shape = null;
 
+    private float time = 0.0f;
     // should this object be able to be controlled by collision response physics?
     public bool lockPosition = false;
 
@@ -31,6 +33,24 @@ public class BasicObjectPhysics : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        time += Time.deltaTime;
+        //Debug.Log(time);
+        float small = 0.0000001f;
+        if (time >= 3.0f && (velocity.x <= small || velocity.x >= -small))
+        {
+            velocity.x = 0.0f;
+            time = 0.0f;
+        }
+        if (time >= 3.0f && (velocity.y <= small || velocity.y >= -small))
+        {
+            velocity.y = 0.0f;
+            time = 0.0f;
+        }
+        if (time >= 3.0f && (velocity.z <= small || velocity.z >= -small))
+        {
+            velocity.z = 0.0f;
+            time = 0.0f;
+        }
 
     }
 }

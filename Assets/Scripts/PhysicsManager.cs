@@ -394,7 +394,6 @@ public class PhysicsManager : MonoBehaviour
         }
 
         float impulse;
-
         // respond differently based on locked states
         if (objA.lockPosition && !objB.lockPosition)
         {
@@ -457,7 +456,6 @@ public class PhysicsManager : MonoBehaviour
         float gravityAccelerationAlongNormal = Vector3.Dot(gravity1, normalAtoB);    // * by mass to find force
 
         Vector3 frictionAcceleration = directionToApplyFriction * gravityAccelerationAlongNormal * kFrictionCoefficient;
-
         if(!a.lockPosition)
         {
             a.velocity += frictionAcceleration * Time.fixedDeltaTime;   // didn't divide by mass, but could have if we multiplied by mas earlier
