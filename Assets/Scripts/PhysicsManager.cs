@@ -67,6 +67,13 @@ public class PhysicsManager : MonoBehaviour
                     //to do specific things with it we need to do a cast to our derived class PhysiczSphere
                     SphereAABBCollision((PhysiczSphere)objectA.shape, (PhysiczAABB)objectB.shape);
                 }
+                if (objectB.shape.GetCollisionShape() == CollisionShape.Sphere && objectA.shape.GetCollisionShape() == CollisionShape.AABB)
+                {
+                    //Do the collision
+                    //PhysiczObject.shape is a base class refference to physiczcollisderbase
+                    //to do specific things with it we need to do a cast to our derived class PhysiczSphere
+                    SphereAABBCollision((PhysiczSphere)objectB.shape, (PhysiczAABB)objectA.shape);
+                }
                 if (objectA.shape.GetCollisionShape() == CollisionShape.Plane && objectB.shape.GetCollisionShape() == CollisionShape.Sphere)
                 {
                     //Do the collision
@@ -91,7 +98,7 @@ public class PhysicsManager : MonoBehaviour
 
     static void SphereSphereCollision(PhysiczSphere a, PhysiczSphere b)
     {
-        Vector3 displacement = a.transform.position - b.transform.position;
+        Vector3 displacement = b.transform.position - a.transform.position;
         float distance = displacement.magnitude;
         float sumRadii = a.radius + b.radius;
         float penitrationDepth = sumRadii - distance;
@@ -251,7 +258,7 @@ public class PhysicsManager : MonoBehaviour
         // GetHalf sizes along each axis (x, y, and z)
         // Get distance between the sphere and box on each axis (x, y, and z)
 
-        float Raduis = (((PhysiczSphere) sphere).radius) / 2;
+        float Raduis = (((PhysiczSphere) sphere).radius);
         Vector3 halfSizeB = ((PhysiczAABB)box).GetHalfSize();
 
         Vector3 displacementAtoB = box.transform.position - sphere.transform.position;
@@ -312,12 +319,12 @@ public class PhysicsManager : MonoBehaviour
         Vector3 TranslationVectorA = -minimumTranslationVectorAtoB * moveScalarA;
         Vector3 TranslationVectorB = minimumTranslationVectorAtoB * moveScalarB;
 
-        //// Update Positions based on Translations
-        a.transform.position += TranslationVectorA;
-        b.transform.position += TranslationVectorB;
+        // Update Positions based on Translations
+        //a.transform.position += TranslationVectorA;
+        //b.transform.position += TranslationVectorB;
 
-        //b.transform.Translate(TranslationVectorB);
-        //a.transform.Translate(TranslationVectorA);
+        a.transform.Translate(TranslationVectorA);
+        b.transform.Translate(TranslationVectorB);
 
         Vector3 contactPoint = contact;
 
@@ -453,7 +460,7 @@ public class PhysicsManager : MonoBehaviour
 
         if(!a.lockPosition)
         {
-            a.velocity -= frictionAcceleration * Time.fixedDeltaTime;   // didn't divide by mass, but could have if we multiplied by mas earlier
+            a.velocity += frictionAcceleration * Time.fixedDeltaTime;   // didn't divide by mass, but could have if we multiplied by mas earlier
         }
         if (!b.lockPosition)
         {

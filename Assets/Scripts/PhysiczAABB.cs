@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class PhysiczAABB : PhysiczColliderBase
 {
-    public Vector3 dimensions = new Vector3(1, 1, 1);
-
     public Vector3 GetMin()
     {
         return transform.position - GetHalfSize();
