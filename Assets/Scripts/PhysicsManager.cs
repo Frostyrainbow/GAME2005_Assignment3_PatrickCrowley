@@ -60,6 +60,13 @@ public class PhysicsManager : MonoBehaviour
                     //to do specific things with it we need to do a cast to our derived class PhysiczSphere
                     SphereSphereCollision((PhysiczSphere)objectA.shape, (PhysiczSphere)objectB.shape);
                 }
+                if (objectA.shape.GetCollisionShape() == CollisionShape.Sphere && objectB.shape.GetCollisionShape() == CollisionShape.AABB)
+                {
+                    //Do the collision
+                    //PhysiczObject.shape is a base class refference to physiczcollisderbase
+                    //to do specific things with it we need to do a cast to our derived class PhysiczSphere
+                    SphereAABBCollision((PhysiczSphere)objectA.shape, (PhysiczAABB)objectB.shape);
+                }
                 if (objectA.shape.GetCollisionShape() == CollisionShape.Plane && objectB.shape.GetCollisionShape() == CollisionShape.Sphere)
                 {
                     //Do the collision
@@ -236,6 +243,65 @@ public class PhysicsManager : MonoBehaviour
 
         ApplyMinimumTraslationVector(objectA.kinematicsObject, objectB.kinematicsObject, minimumTranslationVector, collisionNormalAtoB, contact);
 
+    }
+
+
+    static void SphereAABBCollision(PhysiczColliderBase sphere, PhysiczColliderBase box)
+    {
+        // GetHalf sizes along each axis (x, y, and z)
+        // Get distance between the sphere and box on each axis (x, y, and z)
+
+        float Raduis = (((PhysiczSphere) sphere).radius) / 2;
+        Vector3 halfSizeB = ((PhysiczAABB)box).GetHalfSize();
+
+        Vector3 displacementAtoB = box.transform.position - sphere.transform.position;
+
+        float distX = Mathf.Abs(displacementAtoB.x);
+        float distY = Mathf.Abs(displacementAtoB.y);
+        float distZ = Mathf.Abs(displacementAtoB.z);
+
+        // For each axis:
+        // If the distance between the boxes (along the axis) is less than the sum of the half sizes
+        // then they are overlapping
+
+        float penetrationX = Raduis + halfSizeB.x - distX;
+        float penetrationY = Raduis + halfSizeB.y - distY;
+        float penetrationZ = Raduis + halfSizeB.z - distZ;
+
+        // If there is an overlap along ALL axis then they are colliding, else they are not
+
+        if (penetrationX < 0 || penetrationY < 0 || penetrationZ < 0)
+        {
+            return;
+        }
+
+        // Find minimumTraslationVector (i.e. what is the shortest path we can take)
+        // Along which axis are they closest to being seperate
+        // Move along that axis according to how much overlap there is
+
+        Vector3 minimumTranslationVector;
+        Vector3 collisionNormalAtoB;
+        Vector3 contact;
+
+        if (penetrationX < penetrationY && penetrationX < penetrationZ) // is penX the shortest?
+        {
+            collisionNormalAtoB = new Vector3(Mathf.Sign(displacementAtoB.x), 0, 0);    // Sign returns -1 or 1 based on sign
+            minimumTranslationVector = collisionNormalAtoB * penetrationX;
+        }
+        else if (penetrationY < penetrationX && penetrationY < penetrationZ) // is penY the shortest?
+        {
+            collisionNormalAtoB = new Vector3(0, Mathf.Sign(displacementAtoB.y), 0);    // Sign returns -1 or 1 based on sign
+            minimumTranslationVector = collisionNormalAtoB * penetrationY;
+        }
+        else //if (penetrationZ < penetrationY && penetrationZ < penetrationX) // is penZ the shortest?   // could just be else
+        {
+            collisionNormalAtoB = new Vector3(0, 0, Mathf.Sign(displacementAtoB.z));    // Sign returns -1 or 1 based on sign
+            minimumTranslationVector = collisionNormalAtoB * penetrationZ;
+        }
+
+        contact = sphere.transform.position + minimumTranslationVector;
+
+        ApplyMinimumTraslationVector(sphere.kinematicsObject, box.kinematicsObject, minimumTranslationVector, collisionNormalAtoB, contact);
     }
 
     static void ApplyMinimumTraslationVector(BasicObjectPhysics a, BasicObjectPhysics b, Vector3 minimumTranslationVectorAtoB, Vector3 collisionNormalAtoB, Vector3 contact)
