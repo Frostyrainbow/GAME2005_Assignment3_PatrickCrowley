@@ -98,6 +98,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mass: 625
   velocity: {x: 0, y: 0, z: 0}
+  ballName: BasketBall
   physicManager: {fileID: 0}
   gravityScale: 1
   bounciness: 0.7

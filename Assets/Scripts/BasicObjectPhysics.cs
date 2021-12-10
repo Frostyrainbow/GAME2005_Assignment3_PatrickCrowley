@@ -8,7 +8,7 @@ public class BasicObjectPhysics : MonoBehaviour
 
     public float mass = 1.0f;
     public Vector3 velocity = Vector3.zero;
-
+    public string ballName;
     public PhysicsManager physicManager;
     public float gravityScale = 1.0f;
     [Range(0, 1)]

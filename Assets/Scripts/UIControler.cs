@@ -12,13 +12,16 @@ public class UIControler : MonoBehaviour
     public Text gravityScaleValueText;
     public Text currentScaleText;
     public PhysicsManager physicManager;
+    public GameController controller;
+    public Slider ballSlider;
+    public Text currentBallText;
 
     // Start is called before the first frame update
     void Start()
     {
         panel.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
-
+        currentBallText.text = "Baseball";
         gravityScaleValueText.text = gravityScaleSlider.value.ToString();
         physicManager = FindObjectOfType<PhysicsManager>(); // return the first found component in the scene which has the type
     }
@@ -29,8 +32,9 @@ public class UIControler : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.BackQuote))
         {
             panel.SetActive(!panel.activeInHierarchy);
-
+            controller.noFire = true;
             Cursor.lockState = (panel.activeInHierarchy) ? CursorLockMode.None : CursorLockMode.Locked;
+            controller.noFire = (panel.activeInHierarchy) ? true : false;
         }
 
     }
@@ -39,7 +43,7 @@ public class UIControler : MonoBehaviour
     {
         Debug.Log("Button Pressed");
         panel.SetActive(!panel.activeInHierarchy);
-
+        controller.noFire = false;
         Cursor.lockState = (panel.activeInHierarchy) ? CursorLockMode.None : CursorLockMode.Locked;
     }
 
@@ -66,5 +70,30 @@ public class UIControler : MonoBehaviour
         physicManager.gravity.y = physicManager.gravityScale;
         currentScaleText.text = physicManager.gravityScale.ToString();
 
+    }
+
+    public void updateBall()
+    {
+        if(ballSlider.value == 0)
+        {
+            controller.selectedBall = 0;
+            currentBallText.text = "Baseball";
+        }
+        else if(ballSlider.value == 1)
+        {
+            controller.selectedBall = 1;
+            currentBallText.text = "BasketBall";
+        }
+        else if(ballSlider.value == 2)
+        {
+            controller.selectedBall = 2;
+            currentBallText.text = "BowlingBall";
+        }
+        else
+        {
+            controller.selectedBall = 3;
+            currentBallText.text = "PingPongBall";
+        }
+        
     }
 }

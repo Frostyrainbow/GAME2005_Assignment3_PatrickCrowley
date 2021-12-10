@@ -7,6 +7,8 @@ public class GameController : MonoBehaviour
     public List<BasicObjectPhysics> spherePrefabs;
     public float frameDelay;
     public float Offset;
+    public int selectedBall;
+    public bool noFire = false;
 
     // Start is called before the first frame update
     void Start()
@@ -17,11 +19,15 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if ((Input.GetAxis("Fire1") > 0)&& (Time.frameCount % frameDelay == 0))
+        if (!noFire)
         {
-            var randomSphereIndex = Random.Range(0, spherePrefabs.Count);
-            var bullet = Instantiate(spherePrefabs[randomSphereIndex], Camera.main.transform.position + Camera.main.transform.forward * Offset, Quaternion.identity);
-            bullet.GetComponent<BasicObjectPhysics>().velocity = Camera.main.transform.forward * 10;
+            if ((Input.GetAxis("Fire1") > 0) && (Time.frameCount % frameDelay == 0))
+            {
+
+                var bullet = Instantiate(spherePrefabs[selectedBall], Camera.main.transform.position + Camera.main.transform.forward * Offset, Quaternion.identity);
+                bullet.GetComponent<BasicObjectPhysics>().velocity = Camera.main.transform.forward * 10;
+            }
         }
+        
     }
 }

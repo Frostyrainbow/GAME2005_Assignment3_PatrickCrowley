@@ -98,6 +98,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mass: 3
   velocity: {x: 0, y: 0, z: 0}
+  ballName: PingPong
   physicManager: {fileID: 0}
   gravityScale: 1
   bounciness: 0.95
