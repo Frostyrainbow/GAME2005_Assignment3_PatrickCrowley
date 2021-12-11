@@ -21,9 +21,9 @@ public class GameController : MonoBehaviour
     {
         if (!noFire)
         {
+            //spawn ball when mouse 1 is pressed
             if ((Input.GetAxis("Fire1") > 0) && (Time.frameCount % frameDelay == 0))
             {
-
                 var bullet = Instantiate(spherePrefabs[selectedBall], Camera.main.transform.position + Camera.main.transform.forward * Offset, Quaternion.identity);
                 bullet.GetComponent<BasicObjectPhysics>().velocity = Camera.main.transform.forward * 10;
             }

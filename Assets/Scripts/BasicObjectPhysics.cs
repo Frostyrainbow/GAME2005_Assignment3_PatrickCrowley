@@ -34,8 +34,9 @@ public class BasicObjectPhysics : MonoBehaviour
     void Update()
     {
         time += Time.deltaTime;
-        //Debug.Log(time);
-        float small = 0.0000001f;
+        float small = 0.1f;
+        //check every 3 seconds if the objects velocity is smaller than 0.1f
+        //to stop the object from infinitely moving in small amounts
         if (time >= 3.0f && (velocity.x <= small || velocity.x >= -small))
         {
             velocity.x = 0.0f;

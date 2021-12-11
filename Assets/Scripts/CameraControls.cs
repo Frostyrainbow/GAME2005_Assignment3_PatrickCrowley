@@ -36,11 +36,6 @@ public class CameraControls : MonoBehaviour
 
             Move();
         }
-        else
-        {
-
-        }
-        
     }
 
     private void Move()

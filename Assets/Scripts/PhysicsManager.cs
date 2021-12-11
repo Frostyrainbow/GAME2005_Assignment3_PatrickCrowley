@@ -30,11 +30,7 @@ public class PhysicsManager : MonoBehaviour
                 obj.transform.position = obj.transform.position + obj.velocity * Time.fixedDeltaTime;
             }
         }
-
         CollisionUpdate();
-
-        //foreach loop works for many types of containers in C#
-        //
     }
 
     void CollisionUpdate()
@@ -60,6 +56,7 @@ public class PhysicsManager : MonoBehaviour
                     //to do specific things with it we need to do a cast to our derived class PhysiczSphere
                     SphereSphereCollision((PhysiczSphere)objectA.shape, (PhysiczSphere)objectB.shape);
                 }
+                //if Sphere and Box collided
                 if (objectA.shape.GetCollisionShape() == CollisionShape.Sphere && objectB.shape.GetCollisionShape() == CollisionShape.AABB)
                 {
                     //Do the collision
@@ -67,6 +64,7 @@ public class PhysicsManager : MonoBehaviour
                     //to do specific things with it we need to do a cast to our derived class PhysiczSphere
                     SphereAABBCollision((PhysiczSphere)objectA.shape, (PhysiczAABB)objectB.shape);
                 }
+                //if Sphere and Box collided
                 if (objectB.shape.GetCollisionShape() == CollisionShape.Sphere && objectA.shape.GetCollisionShape() == CollisionShape.AABB)
                 {
                     //Do the collision
@@ -74,6 +72,7 @@ public class PhysicsManager : MonoBehaviour
                     //to do specific things with it we need to do a cast to our derived class PhysiczSphere
                     SphereAABBCollision((PhysiczSphere)objectB.shape, (PhysiczAABB)objectA.shape);
                 }
+                //if Sphere and plane collided
                 if (objectA.shape.GetCollisionShape() == CollisionShape.Plane && objectB.shape.GetCollisionShape() == CollisionShape.Sphere)
                 {
                     //Do the collision
@@ -81,10 +80,12 @@ public class PhysicsManager : MonoBehaviour
                     //to do specific things with it we need to do a cast to our derived class PhysiczSphere
                     PlaneSphereCollision(objectA, objectB);
                 }
+                //if Sphere and plane collided
                 if (objectB.shape.GetCollisionShape() == CollisionShape.Plane && objectA.shape.GetCollisionShape() == CollisionShape.Sphere)
                 {
                     PlaneSphereCollision(objectB, objectA);
                 }
+                //if Both object are AABB and collided
                 if (objectA.shape.GetCollisionShape() == CollisionShape.AABB && objectB.shape.GetCollisionShape() == CollisionShape.AABB)
                 {
                     // do the collision
@@ -104,13 +105,7 @@ public class PhysicsManager : MonoBehaviour
         float penitrationDepth = sumRadii - distance;
         bool isOverlapping = penitrationDepth > 0.0f;
 
-
-        if (isOverlapping)
-        {
-            Debug.Log(a.name + " collided with: " + b.name);
-
-        }
-        else
+        if (!isOverlapping)
         {
             return;
         }
@@ -118,22 +113,8 @@ public class PhysicsManager : MonoBehaviour
         // Normalized vector of length 1, representing the directio from A to B
         Vector3 collisionNormalAtoB = displacement / distance;
 
-        //ComputeMovementScalars(a.kinematicsObject, b.kinematicsObject, out float moveScalarA, out float moveScalarB);
-
-        //// calculate Translations
+        // calculate Translations
         Vector3 minimumTranslationVectorAtoB = penitrationDepth * collisionNormalAtoB;
-        //Vector3 TranslationVectorA = minimumTranslationVectorAtoB * -moveScalarA;
-        //Vector3 TranslationVectorB = -minimumTranslationVectorAtoB * moveScalarB;
-
-        ////// Update Positions based on Translations
-        ////a.transform.position += TranslationVectorA;
-        ////b.transform.position += TranslationVectorB;
-
-        //b.transform.Translate(TranslationVectorB);
-        //a.transform.Translate(TranslationVectorA);
-
-        //ApplyVelocityResponse(a.kinematicsObject, b.kinematicsObject, collisionNormalAtoB);
-
 
         Vector3 contactPoint = a.transform.position + collisionNormalAtoB * a.radius;
 
@@ -188,7 +169,6 @@ public class PhysicsManager : MonoBehaviour
                 penetrationDepth.z = 0.0f;
             }
 
-            //sphere.velocity *= 0.5f;       // Energy Loss on bounce
             sphere.transform.Translate(-penetrationDepth);  // Reset position if embedded
         }
     }
@@ -313,6 +293,7 @@ public class PhysicsManager : MonoBehaviour
 
     static void ApplyMinimumTraslationVector(BasicObjectPhysics a, BasicObjectPhysics b, Vector3 minimumTranslationVectorAtoB, Vector3 collisionNormalAtoB, Vector3 contact)
     {
+        //calculate the proper scaler if object is locked or not
         ComputeMovementScalars(a, b, out float moveScalarA, out float moveScalarB);
 
         // calculate Translations
@@ -320,15 +301,10 @@ public class PhysicsManager : MonoBehaviour
         Vector3 TranslationVectorB = minimumTranslationVectorAtoB * moveScalarB;
 
         // Update Positions based on Translations
-        //a.transform.position += TranslationVectorA;
-        //b.transform.position += TranslationVectorB;
-
         a.transform.Translate(TranslationVectorA);
         b.transform.Translate(TranslationVectorB);
 
         Vector3 contactPoint = contact;
-
-        //ApplyMinimumTraslationVector(a, b, minimumTranslationVectorAtoB, collisionNormalAtoB, contact);
 
         ApplyVelocityResponse(a, b, collisionNormalAtoB);
 
@@ -339,22 +315,26 @@ public class PhysicsManager : MonoBehaviour
         // Check to see if either object is Locked
         if (a.lockPosition && !b.lockPosition)
         {
+            //if A is locked and B is not
             mtvScalarA = 0.0f;
             mtvScalarB = 1.0f;
             return;
         }
         if (!a.lockPosition && b.lockPosition)
         {
+            //if B is locked and A is not
             mtvScalarA = 1.0f;
             mtvScalarB = 0.0f;
             return;
         }
         if (!a.lockPosition && !b.lockPosition)
         {
+            //if both objects are not locked
             mtvScalarA = 0.5f;
             mtvScalarB = 0.5f;
             return;
         }
+        //else is A and B is locked
         mtvScalarA = 0.0f;
         mtvScalarB = 0.0f;
     }
@@ -365,6 +345,7 @@ public class PhysicsManager : MonoBehaviour
 
         // Velocity of B relative to A
         Vector3 relativeVelocityAB = objB.velocity - objA.velocity;
+
         // Find relative velocity
         float relativeNormalVelocityAB = Vector3.Dot(relativeVelocityAB, normal);
 
@@ -464,25 +445,5 @@ public class PhysicsManager : MonoBehaviour
         {
             b.velocity += frictionAcceleration * Time.fixedDeltaTime;
         }
-
-
-        // Find Normal
-        // Find force of gravity
-        // Calculate Normal Force from gravity
-        // Choose a coefficient of friction
-
-
-
-        // Calculate force of friction (Fnormal * coefficientOfFriction)
-        // Apply the force of friction opposite to the relative velocity to create an acceleration
-
-
-
-        // Keep in mind we have a feature for "Locked" objects
-
-
-
     }
-
 }
-

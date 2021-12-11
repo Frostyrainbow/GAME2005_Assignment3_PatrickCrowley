@@ -19,7 +19,7 @@ public class UIControler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        panel.SetActive(false);
+        panel.SetActive(false);//dont show panel on start
         Cursor.lockState = CursorLockMode.Locked;
         currentBallText.text = "Baseball";
         gravityScaleValueText.text = gravityScaleSlider.value.ToString();
@@ -29,6 +29,7 @@ public class UIControler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //show panel if ` is pressed
         if(Input.GetKeyDown(KeyCode.BackQuote))
         {
             panel.SetActive(!panel.activeInHierarchy);
@@ -76,21 +77,25 @@ public class UIControler : MonoBehaviour
     {
         if(ballSlider.value == 0)
         {
+            //Fire baseballs
             controller.selectedBall = 0;
             currentBallText.text = "Baseball";
         }
         else if(ballSlider.value == 1)
         {
+            //Fire BasketBalls
             controller.selectedBall = 1;
             currentBallText.text = "BasketBall";
         }
         else if(ballSlider.value == 2)
         {
+            //Fire Bowling balls
             controller.selectedBall = 2;
             currentBallText.text = "BowlingBall";
         }
         else
         {
+            //Fire Ping Pong Balls
             controller.selectedBall = 3;
             currentBallText.text = "PingPongBall";
         }
